@@ -32,6 +32,8 @@ class Board:
                         final = Square(possible_move_row, col)
                         # create a new move
                         move = Move(initial, final)
+                        piece.add_move(move)
+
                     # blocked
                     else: break
                 # not in range
@@ -49,6 +51,7 @@ class Board:
                         final = Square(possible_move_row, possible_move_col, final_piece)
                         # create a new move
                         move = Move(initial, final)
+                        piece.add_move(move)
                         
         def knight_moves():
             
@@ -108,7 +111,32 @@ class Board:
                     possible_move_col = possible_move_col + col_incr
 
 
+        def king_moves():
+            adjs = [
+                (row-1, col+0), # up
+                (row-1, col+1), # up-right
+                (row+0, col+1), # right
+                (row+1, col+1), # down-right
+                (row+1, col+0), # down
+                (row+1, col-1), # down-left
+                (row+0, col-1), # left
+                (row-1, col-1), # up-left
+            ]
 
+            # normal moves
+            for possible_move in adjs:
+                possible_move_row, possible_move_col = possible_move
+                possible_move_row, possible_move_col = possible_move
+
+                if Square.in_range(possible_move_row, possible_move_col):
+                    if self.squares[possible_move_row][possible_move_col].isempty_or_enemy(piece.color):
+                        # create squares of the new move
+                        initial = Square(row, col)
+                        final = Square(possible_move_row, possible_move_col) # piece=piece
+                        # create new move
+                        move = Move(initial, final)
+                        # append new move
+                        piece.add_move(move)
 
         if isinstance(piece, Pawn): 
             pawn_moves()
@@ -126,11 +154,12 @@ class Board:
 
         elif isinstance(piece, Rook): 
             straightline_moves(
+                [
                 (-1, 0),
                 (0, 1),
                 (1, 0,),
                 (0, -1)
-            )
+            ])
         elif isinstance(piece, Queen): 
             straightline_moves ([
                 (-1, 1),
@@ -144,7 +173,7 @@ class Board:
             ])
 
         elif isinstance(piece, King): 
-            pass
+            king_moves()
 
 
     def _create(self):
@@ -174,3 +203,6 @@ class Board:
 
         # king
         self.squares[row_other][4] = Square(row_other, 4, King(color))
+        self.squares[5][4] = Square(5, 4, King(color))
+
+        
