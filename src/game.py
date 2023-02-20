@@ -58,7 +58,7 @@ class Game:
                     
                     # all pieces except dragger piece
                     if piece is not self.dragger.piece:
-                        piece.set_texture(size=80)
+                        piece.set_texture(size=60)
                         img = pygame.image.load(piece.texture)
                         img_center = col * SQSIZE + SQSIZE // 2, row * SQSIZE + SQSIZE // 2
                         piece.texture_rect = img.get_rect(center=img_center)
