@@ -80,6 +80,15 @@ class Main:
 
                         released_row = dragger.mouseY // SQSIZE
                         released_col = dragger.mouseX // SQSIZE
+                        
+                        if (released_col > 7):
+                            released_col = 7
+                        if (released_col < 0):
+                            released_col = 0
+                        if (released_row > 7):
+                            released_row = 7
+                        if (released_row < 0):
+                            released_row = 0  
 
                         # create possible move
                         initial = Square(dragger.initial_row, dragger.initial_col)

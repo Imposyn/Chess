@@ -247,6 +247,8 @@ class Board:
                         # create a possible new move
                         move = Move(initial, final)
 
+                        print(possible_move_col,possible_move_row)
+
                         # empty = continue looping
                         if self.squares[possible_move_row][possible_move_col].isempty():
                             # check potencial checks

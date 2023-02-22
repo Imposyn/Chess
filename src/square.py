@@ -4,9 +4,20 @@ class Square:
 
     def __init__(self, row, col, piece=None):
         self.row = row
-        self.col = col
+        if(row > 7):
+            self.row = 7
+        elif(row < 0):
+            self.row = 0
+        else:
+            self.row = row
+        if(col > 7):
+            self.col = 7
+        elif(col < 0):
+            self.col = 0
+        else:
+            self.col = col
         self.piece = piece
-        self.alphacol = self.ALPHACOLS[col]
+        self.alphacol = self.ALPHACOLS[self.col]
 
     def __eq__(self, other):
         return self.row == other.row and self.col == other.col
