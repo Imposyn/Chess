@@ -50,10 +50,10 @@ class Main:
                             dragger.save_initial(event.pos)
                             dragger.drag_piece(piece)
                             # show methods 
-                            game.show_bg(screen)
                             game.show_last_move(screen)
                             game.show_moves(screen)
                             game.show_pieces(screen)
+                            game.show_hover(screen)
                 
                 # mouse motion
                 elif event.type == pygame.MOUSEMOTION:
@@ -99,7 +99,7 @@ class Main:
                         if board.valid_move(dragger.piece, move):
                             # normal capture
                             captured = board.squares[released_row][released_col].has_piece()
-                            board.move(dragger.piece, move)
+                            board.move_piece(dragger.piece, move)
 
                             board.set_true_en_passant(dragger.piece)                            
 

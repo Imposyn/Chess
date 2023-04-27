@@ -15,47 +15,67 @@ class Board:
         self._add_pieces('white')
         self._add_pieces('black')
 
-    def move(self, piece, move, testing=False):
-        initial = move.initial
-        final = move.final
+    def move_piece(self, piece, move, testing=False):
+     initial = move.initial
+     final = move.final
 
-        en_passant_empty = self.squares[final.row][final.col].isempty()
+     en_passant_empty = self.squares[final.row][final.col].isempty()
 
-        # console board move update
-        self.squares[initial.row][initial.czzol].piece = None
-        self.squares[final.row][final.col].piece = piece
+    # check if a piece is at the final position and whether it is of a different color
+     if not self.squares[final.row][final.col].isempty() and self.squares[final.row][final.col].piece.color == piece.color:
+        return False  # do not move if piece at final position is of the same color as moving piece
 
-        if isinstance(piece, Pawn):
-            # en passant capture
+    # console board move update
+     self.squares[initial.row][initial.col].piece = None
+     self.squares[final.row][final.col].piece = piece
+
+     if isinstance(piece, Pawn):
+        # en passant capture
+        diff = final.col - initial.col
+        if diff != 0 and en_passant_empty:
+            # console board move update
+            self.squares[initial.row][initial.col + diff].piece = None
+            self.squares[final.row][final.col].piece = piece
+            if not testing:
+                sound = Sound(
+                    os.path.join('assets/sounds/capture.wav'))
+                sound.play()
+        
+        # pawn promotion
+        else:
+            self.check_promotion(piece, final)
+
+    # king castling
+     if isinstance(piece, King):
+        if self.castling(initial, final) and not testing:
             diff = final.col - initial.col
-            if diff != 0 and en_passant_empty:
-                # console board move update
-                self.squares[initial.row][initial.col + diff].piece = None
-                self.squares[final.row][final.col].piece = piece
-                if not testing:
-                    sound = Sound(
-                        os.path.join('assets/sounds/capture.wav'))
-                    sound.play()
-            
-            # pawn promotion
-            else:
-                self.check_promotion(piece, final)
+            rook = piece.left_rook if (diff < 0) else piece.right_rook
+            self.move(rook, rook.moves[-1])
 
-        # king castling
-        if isinstance(piece, King):
-            if self.castling(initial, final) and not testing:
-                diff = final.col - initial.col
-                rook = piece.left_rook if (diff < 0) else piece.right_rook
-                self.move(rook, rook.moves[-1])
+     # move
+     piece.moved = True
 
-        # move
-        piece.moved = True
+     # clear valid moves
+     piece.clear_moves()
 
-        # clear valid moves
-        piece.clear_moves()
+     # set last move
+     self.last_move = move
 
-        # set last move
-        self.last_move = move
+     # Update board state
+     self.update_board()
+
+     return True  # return True if move is successful
+    
+    def update_board(self):
+       for row in range(8):
+        for col in range(8):
+            piece = self.squares[row][col].piece
+            self.squares[row][col].isoccupied = (piece is not None)
+            if piece is not None:
+                piece.row = row
+                piece.col = col
+                #uppdaterar board genom att kontrollera om varje ruta är upptagen av en pjäs, och i så fall uppdatera pjäsens rad- och kolumnindex
+
 
     def valid_move(self, piece, move):
         return move in piece.moves
@@ -82,7 +102,7 @@ class Board:
     def in_check(self, piece, move):
         temp_piece = copy.deepcopy(piece)
         temp_board = copy.deepcopy(self)
-        temp_board.move(temp_piece, move, testing=True)
+        temp_board.move_piece(temp_piece, move, testing=True)
         
         for row in range(ROWS):
             for col in range(COLS):
