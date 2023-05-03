@@ -50,7 +50,7 @@ class Board:
         if self.castling(initial, final) and not testing:
             diff = final.col - initial.col
             rook = piece.left_rook if (diff < 0) else piece.right_rook
-            self.move(rook, rook.moves[-1])
+            self.move_piece(rook, rook.moves[-1])
 
      # move
      piece.moved = True
@@ -60,22 +60,6 @@ class Board:
 
      # set last move
      self.last_move = move
-
-     # Update board state
-     self.update_board()
-
-     return True  # return True if move is successful
-    
-    def update_board(self):
-       for row in range(8):
-        for col in range(8):
-            piece = self.squares[row][col].piece
-            self.squares[row][col].isoccupied = (piece is not None)
-            if piece is not None:
-                piece.row = row
-                piece.col = col
-                #uppdaterar board genom att kontrollera om varje ruta är upptagen av en pjäs, och i så fall uppdatera pjäsens rad- och kolumnindex
-
 
     def valid_move(self, piece, move):
         return move in piece.moves
