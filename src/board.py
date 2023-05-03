@@ -116,6 +116,7 @@ class Board:
         return False
 
     def calc_moves(self, piece, row, col, bool=True):
+        piece.moves = []
         '''
             Calculate all the possible (valid) moves of an specific piece on a specific position
         '''
